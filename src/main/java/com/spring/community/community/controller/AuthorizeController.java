@@ -1,14 +1,13 @@
 package com.spring.community.community.controller;
 
 import com.spring.community.community.dto.GitHubAccessTokenDTO;
-import com.spring.community.community.dto.GitHubUser;
+import com.spring.community.community.dto.GitHubUserDTO;
 import com.spring.community.community.mapper.UserMapper;
 import com.spring.community.community.model.User;
 import com.spring.community.community.provider.GitHubProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -45,7 +44,7 @@ public class AuthorizeController {
         gitHubAccessTokenDTO.setClient_id(clientId);
         gitHubAccessTokenDTO.setClient_secret(secret);
         String githubToken = gitHubProvider.getGitHubAccessToken(gitHubAccessTokenDTO);
-        GitHubUser gitHubProviderUser = gitHubProvider.getUser(githubToken);
+        GitHubUserDTO gitHubProviderUser = gitHubProvider.getUser(githubToken);
         if (gitHubProviderUser != null && gitHubProviderUser.getId() != null){
             // 判断用户是否第一次登陆，查询user 是否存在
             String accountId = gitHubProviderUser.getId().toString();

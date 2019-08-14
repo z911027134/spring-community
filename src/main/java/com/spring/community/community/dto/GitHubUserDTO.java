@@ -3,7 +3,7 @@ package com.spring.community.community.dto;
 import lombok.Data;
 
 @Data
-public class GitHubUser {
+public class GitHubUserDTO {
     private String login;
 
     private String name;

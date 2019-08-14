@@ -2,7 +2,7 @@ package com.spring.community.community.provider;
 
 import com.alibaba.fastjson.JSON;
 import com.spring.community.community.dto.GitHubAccessTokenDTO;
-import com.spring.community.community.dto.GitHubUser;
+import com.spring.community.community.dto.GitHubUserDTO;
 import okhttp3.*;
 import org.springframework.stereotype.Component;
 
@@ -27,7 +27,7 @@ public class GitHubProvider {
         return null;
     }
 
-    public GitHubUser getUser(String accessToekn) {
+    public GitHubUserDTO getUser(String accessToekn) {
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
                 .url("https://api.github.com/user?access_token="+accessToekn)
@@ -36,7 +36,7 @@ public class GitHubProvider {
             Response response = client.newCall(request).execute();
             String string = response.body().string();
             System.out.println(string);
-            return JSON.parseObject(string, GitHubUser.class);
+            return JSON.parseObject(string, GitHubUserDTO.class);
         }catch (IOException e) {}catch (NullPointerException e){
             e.printStackTrace();
         }

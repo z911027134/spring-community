@@ -2,10 +2,7 @@ package com.spring.community.community.mapper;
 
 
 import com.spring.community.community.model.User;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 
 @Mapper
 public interface UserMapper {
@@ -21,4 +18,7 @@ public interface UserMapper {
 
     @Update("update user set token=#{token} where account_id=#{accountId}")
     void updateUserToken(User updateUser);
+
+    @Select("select * from user where id=#{id}")
+    User findById(@Param("id")Integer id);
 }
