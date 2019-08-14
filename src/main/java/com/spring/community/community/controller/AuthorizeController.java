@@ -47,18 +47,27 @@ public class AuthorizeController {
         String githubToken = gitHubProvider.getGitHubAccessToken(gitHubAccessTokenDTO);
         GitHubUser gitHubProviderUser = gitHubProvider.getUser(githubToken);
         if (gitHubProviderUser != null && gitHubProviderUser.getId() != null){
-            User user = new User();
+            // 判断用户是否第一次登陆，查询user 是否存在
+            String accountId = gitHubProviderUser.getId().toString();
+            User existsUser = userMapper.findByAccountId(gitHubProviderUser.getId().toString());
             String token = UUID.randomUUID().toString();
-            user.setToken(token);
-            user.setAccountId(gitHubProviderUser.getId().toString());
-            String name = gitHubProviderUser.getName() == null ? gitHubProviderUser.getLogin() : gitHubProviderUser.getName();
-            user.setName(name);
-            user.setAvatarUrl(gitHubProviderUser.getAvatarUrl());
-            user.setGmtCreate(System.currentTimeMillis());
-            user.setGmtModified(user.getGmtCreate());
-            //user.setToken(token);
-            userMapper.insert(user);
-            //request.getSession().setAttribute("user", gitHubProviderUser);
+            if (existsUser != null){
+                //更新token
+                User updateUser = new User();
+                updateUser.setToken(token);
+                updateUser.setAccountId(accountId);
+                userMapper.updateUserToken(updateUser);
+            }else {
+                User user = new User();
+                user.setToken(token);
+                user.setAccountId(accountId);
+                String name = gitHubProviderUser.getName() == null ? gitHubProviderUser.getLogin() : gitHubProviderUser.getName();
+                user.setName(name);
+                user.setAvatarUrl(gitHubProviderUser.getAvatarUrl());
+                user.setGmtCreate(System.currentTimeMillis());
+                user.setGmtModified(user.getGmtCreate());
+                userMapper.insert(user);
+            }
             response.addCookie(new Cookie("token", token));
         }
         return "redirect:/";
