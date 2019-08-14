@@ -1,5 +1,8 @@
 package com.spring.community.community.dto;
 
+import lombok.Data;
+
+@Data
 public class GitHubUser {
     private String login;
 
@@ -7,37 +10,8 @@ public class GitHubUser {
 
     private Long id;
 
-    private String ido;
+    private String bio;
 
-    public String getLogin() {
-        return login;
-    }
+    private String avatarUrl;
 
-    public void setLogin(String login) {
-        this.login = login;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getIdo() {
-        return ido;
-    }
-
-    public void setIdo(String ido) {
-        this.ido = ido;
-    }
 }
