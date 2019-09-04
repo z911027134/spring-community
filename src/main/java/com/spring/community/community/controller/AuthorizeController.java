@@ -2,9 +2,9 @@ package com.spring.community.community.controller;
 
 import com.spring.community.community.dto.GitHubAccessTokenDTO;
 import com.spring.community.community.dto.GitHubUserDTO;
-import com.spring.community.community.mapper.UserMapper;
 import com.spring.community.community.model.User;
 import com.spring.community.community.provider.GitHubProvider;
+import com.spring.community.community.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -29,13 +29,12 @@ public class AuthorizeController {
     private String secret;
 
     @Autowired
-    private UserMapper userMapper;
+    private UserService userService;
 
     @GetMapping("githubCallback")
     public String githubCallback(
             @RequestParam(name="code", required = true, defaultValue = "") String code,
             @RequestParam(name="state", required = true, defaultValue = "") String state,
-            HttpServletRequest request,
             HttpServletResponse response
     ) {
         GitHubAccessTokenDTO gitHubAccessTokenDTO = new GitHubAccessTokenDTO();
@@ -48,27 +47,26 @@ public class AuthorizeController {
         if (gitHubProviderUser != null && gitHubProviderUser.getId() != null){
             // 判断用户是否第一次登陆，查询user 是否存在
             String accountId = gitHubProviderUser.getId().toString();
-            User existsUser = userMapper.findByAccountId(gitHubProviderUser.getId().toString());
             String token = UUID.randomUUID().toString();
-            if (existsUser != null){
-                //更新token
-                User updateUser = new User();
-                updateUser.setToken(token);
-                updateUser.setAccountId(accountId);
-                userMapper.updateUserToken(updateUser);
-            }else {
-                User user = new User();
-                user.setToken(token);
-                user.setAccountId(accountId);
-                String name = gitHubProviderUser.getName() == null ? gitHubProviderUser.getLogin() : gitHubProviderUser.getName();
-                user.setName(name);
-                user.setAvatarUrl(gitHubProviderUser.getAvatarUrl());
-                user.setGmtCreate(System.currentTimeMillis());
-                user.setGmtModified(user.getGmtCreate());
-                userMapper.insert(user);
-            }
+            User user = new User();
+            user.setToken(token);
+            user.setAccountId(accountId);
+            String name = gitHubProviderUser.getName() == null ? gitHubProviderUser.getLogin() : gitHubProviderUser.getName();
+            user.setName(name);
+            user.setAvatarUrl(gitHubProviderUser.getAvatarUrl());
+            userService.createOrUpdate(user);
             response.addCookie(new Cookie("token", token));
         }
+        return "redirect:/";
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request,
+                         HttpServletResponse response) {
+        request.getSession().removeAttribute("user");
+        Cookie cookie = new Cookie("token", null);
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
         return "redirect:/";
     }
 }
