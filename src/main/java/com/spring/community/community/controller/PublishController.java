@@ -60,7 +60,7 @@ public class PublishController {
         question.setGmtCreate(System.currentTimeMillis());
         question.setGmtModified(question.getGmtCreate());
         question.setCreator(user.getId());
-        questionService.create(question);
+        questionService.createOrUpdate(question);
         return "redirect:/";
     }
 }

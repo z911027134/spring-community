@@ -2,6 +2,8 @@ package com.spring.community.community.service;
 
 import com.spring.community.community.dto.PaginationDTO;
 import com.spring.community.community.dto.QuestionDTO;
+import com.spring.community.community.exception.CustomizeErrorCode;
+import com.spring.community.community.exception.CustomizeException;
 import com.spring.community.community.mapper.QuestionMapper;
 import com.spring.community.community.mapper.UserMapper;
 import com.spring.community.community.model.Question;
@@ -95,6 +97,9 @@ public class QuestionService {
 
     public QuestionDTO getById(Integer id) {
         Question question = questionMapper.selectByPrimaryKey(id);
+        if (question == null) {
+            throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
+        }
         QuestionDTO questionDTO = new QuestionDTO();
         BeanUtils.copyProperties(question, questionDTO);
         User user = userMapper.selectByPrimaryKey(question.getCreator());
@@ -102,7 +107,23 @@ public class QuestionService {
         return questionDTO;
     }
 
-    public void create(Question question) {
-        questionMapper.insert(question);
+    public void createOrUpdate(Question question) {
+        if (question.getId() == null) {
+            question.setGmtCreate(System.currentTimeMillis());
+            question.setGmtModified(question.getGmtCreate());
+            questionMapper.insert(question);
+        }else{
+            Question updateQuestion = new Question();
+            updateQuestion.setGmtModified(System.currentTimeMillis());
+            updateQuestion.setTitle(question.getTitle());
+            updateQuestion.setTag(question.getTitle());
+            updateQuestion.setDescription(question.getDescription());
+            QuestionExample example = new QuestionExample();
+            example.createCriteria().andIdEqualTo(question.getId());
+            int updated = questionMapper.updateByExampleSelective(updateQuestion, example);
+            if (updated != 1) {
+                throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
+            }
+        }
     }
 }
