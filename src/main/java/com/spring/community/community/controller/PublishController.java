@@ -3,6 +3,7 @@ package com.spring.community.community.controller;
 import com.spring.community.community.mapper.QuestionMapper;
 import com.spring.community.community.model.Question;
 import com.spring.community.community.model.User;
+import com.spring.community.community.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,7 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 public class PublishController {
 
     @Autowired
-    private QuestionMapper questionMapper;
+    private QuestionService questionService;
 
     @GetMapping("publish")
     public String publish() {
@@ -59,7 +60,7 @@ public class PublishController {
         question.setGmtCreate(System.currentTimeMillis());
         question.setGmtModified(question.getGmtCreate());
         question.setCreator(user.getId());
-        questionMapper.create(question);
+        questionService.create(question);
         return "redirect:/";
     }
 }
