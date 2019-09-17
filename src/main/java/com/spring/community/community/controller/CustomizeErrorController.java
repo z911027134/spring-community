@@ -1,5 +1,6 @@
 package com.spring.community.community.controller;
 
+import com.spring.community.community.exception.CustomizeErrorCode;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -23,10 +24,10 @@ public class CustomizeErrorController implements ErrorController {
     public ModelAndView errorHtml(HttpServletRequest request, Model model) {
         HttpStatus httpStatus = getHttpStatus(request);
         if (httpStatus.is4xxClientError()){
-            model.addAttribute("message", "请求错误，请检查参数");
+            model.addAttribute("message", CustomizeErrorCode.PARAMS_ERROR);
         }
         if (httpStatus.is5xxServerError()) {
-            model.addAttribute("message", "服务器出错了，请稍后重试");
+            model.addAttribute("message", CustomizeErrorCode.SYS_ERROR);
         }
         return new ModelAndView("error");
     }

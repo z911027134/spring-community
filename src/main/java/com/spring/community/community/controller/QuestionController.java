@@ -16,7 +16,7 @@ public class QuestionController {
 
     @GetMapping("/question/{id}")
     public String question(
-            @PathVariable(name = "") Integer id,
+            @PathVariable(name = "") Long id,
             Model model
    ) {
         QuestionDTO question = questionService.getById(id);
