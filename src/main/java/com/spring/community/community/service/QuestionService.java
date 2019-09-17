@@ -4,6 +4,7 @@ import com.spring.community.community.dto.PaginationDTO;
 import com.spring.community.community.dto.QuestionDTO;
 import com.spring.community.community.exception.CustomizeErrorCode;
 import com.spring.community.community.exception.CustomizeException;
+import com.spring.community.community.mapper.QuestionExtMapper;
 import com.spring.community.community.mapper.QuestionMapper;
 import com.spring.community.community.mapper.UserMapper;
 import com.spring.community.community.model.Question;
@@ -22,6 +23,9 @@ public class QuestionService {
 
     @Autowired
     private QuestionMapper questionMapper;
+
+    @Autowired
+    private QuestionExtMapper questionExtMapper;
 
     @Autowired
     private UserMapper userMapper;
@@ -125,5 +129,12 @@ public class QuestionService {
                 throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
             }
         }
+    }
+
+    public void incrViewCount(Integer id) {
+        Question record = new Question();
+        record.setId(id);
+        record.setViewCount(1);
+        questionExtMapper.incrViewCount(record);
     }
 }
