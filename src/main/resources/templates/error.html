@@ -13,7 +13,7 @@
 <div th:insert="~{navigation::nav}"></div>
 <div class="jumbotron">
     <h1>出错啦！！！</h1>
-    <p th:text="${message}">服务器出错了，请稍后重试</p>
+    <p th:text="${message.getMessage()}">服务器出错了，请稍后重试</p>
     <p><a class="btn btn-primary btn-lg" href="/" role="button">回到主页</a></p>
 </div>
 </body>

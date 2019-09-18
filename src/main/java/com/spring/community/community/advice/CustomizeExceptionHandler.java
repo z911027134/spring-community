@@ -47,7 +47,7 @@ public class CustomizeExceptionHandler {
         } else {
             // html view返回
             if (e instanceof CustomizeException) {
-                model.addAttribute("message", e.getMessage());
+                model.addAttribute("message", e);
             } else {
                 model.addAttribute("message", CustomizeErrorCode.SYS_ERROR.getMessage());
             }
