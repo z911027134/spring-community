@@ -89,3 +89,12 @@ body {
 .sub-comments .btn{
     margin: 10px 0;
 }
+
+.menu .comment-icon {
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.menu .comment-icon :hover {
+    color: #499ef3;
+}
