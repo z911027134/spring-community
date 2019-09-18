@@ -8,6 +8,7 @@ public enum CustomizeErrorCode implements ICustomizeErrorCode {
     TARGET_PARAM_NOT_FOUND(2005, "未选中问题或者评论进行回复"),
     COMMENT_TYPE_NOT_FOUND(2006, "评论类型不存在，请确认"),
     PARAMS_ERROR(2007, "请求错误，请检查参数"),
+    COMMENT_CONTENT_EMPTY(2008, "评论内容不能为空"),
     ;
 
     private String message;

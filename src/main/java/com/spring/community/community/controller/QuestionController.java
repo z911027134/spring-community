@@ -1,5 +1,6 @@
 package com.spring.community.community.controller;
 
+import com.spring.community.community.CommentTypeEnum;
 import com.spring.community.community.dto.CommentDTO;
 import com.spring.community.community.dto.QuestionDTO;
 import com.spring.community.community.service.CommentService;
@@ -27,7 +28,7 @@ public class QuestionController {
             Model model
    ) {
         QuestionDTO question = questionService.getById(id);
-        List<CommentDTO> comments = commentService.listByQuestionId(id);
+        List<CommentDTO> comments = commentService.listByTargetId(id, CommentTypeEnum.QUESTION);
         questionService.incrViewCount(id);
         model.addAttribute("question", question);
         model.addAttribute("comments", comments);
