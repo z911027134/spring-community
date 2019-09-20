@@ -28,10 +28,12 @@ public class QuestionController {
             Model model
    ) {
         QuestionDTO question = questionService.getById(id);
+        List<QuestionDTO> relationQuestions = questionService.getRelationQuestion(question);
         List<CommentDTO> comments = commentService.listByTargetId(id, CommentTypeEnum.QUESTION);
         questionService.incrViewCount(id);
         model.addAttribute("question", question);
         model.addAttribute("comments", comments);
+        model.addAttribute("relationQuestions", relationQuestions);
         return "question";
     }
 }
