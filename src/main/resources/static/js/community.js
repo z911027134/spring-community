@@ -109,9 +109,33 @@ function collapseComments(e) {
                 e.classList.add("active");
             });
         }
+    }
+}
 
+function showSelectTag() {
+    $("#select-tag").show();
+    var lis = $("ul.nav-tabs li");
+    var isClick = false;
+    lis.each(function(i){
+        if($(this).hasClass("active")){
+            isClick = true;
+        }
+    });
+    if (!isClick) {
+        $("ul.nav-tabs li").first().addClass("active");
+        $("div.tab-pane").first().addClass("active");
+    }
 
+}
 
-
+function selectTag(e) {
+    var value = e.getAttribute("data-tag");
+    var previous = $("#tag").val();
+    if (previous.indexOf(value) == -1) {
+        if (previous) {
+            $("#tag").val(previous + ',' + value);
+        } else {
+            $("#tag").val(value);
+        }
     }
 }
