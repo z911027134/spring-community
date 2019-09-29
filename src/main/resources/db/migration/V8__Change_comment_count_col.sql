@@ -1,0 +1,1 @@
+ALTER TABLE comment change commentr_count comment_count int NOT NULL DEFAULT 0;

@@ -1,7 +1,7 @@
 package com.spring.community.controller;
 
 
-import com.spring.community.CommentTypeEnum;
+import com.spring.community.enums.CommentTypeEnum;
 import com.spring.community.dto.CommentCreateDTO;
 import com.spring.community.dto.CommentDTO;
 import com.spring.community.dto.ResultDTO;
@@ -15,7 +15,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.xml.transform.Result;
 import java.util.List;
 
 @Controller
@@ -44,7 +43,7 @@ public class CommentController {
         comment.setCommentator(user.getId());
         comment.setCommentCount(0);
         comment.setLikeCount(0L);
-        commentService.insert(comment);
+        commentService.insert(comment, user);
         return ResultDTO.okOf();
     }
 

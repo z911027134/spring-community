@@ -52,6 +52,8 @@ public class AuthorizeController {
             user.setToken(token);
             user.setAccountId(accountId);
             String name = gitHubProviderUser.getName() == null ? gitHubProviderUser.getLogin() : gitHubProviderUser.getName();
+            String bio = gitHubProviderUser.getBio() == null ? "" : gitHubProviderUser.getBio();
+            user.setBio(bio);
             user.setName(name);
             user.setAvatarUrl(gitHubProviderUser.getAvatarUrl());
             userService.createOrUpdate(user);

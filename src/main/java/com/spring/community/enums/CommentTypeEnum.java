@@ -1,4 +1,4 @@
-package com.spring.community;
+package com.spring.community.enums;
 
 public enum CommentTypeEnum {
     QUESTION(1),

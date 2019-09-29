@@ -2,6 +2,7 @@ package com.spring.community.controller;
 
 import com.spring.community.dto.PaginationDTO;
 import com.spring.community.model.User;
+import com.spring.community.service.NotificationService;
 import com.spring.community.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,6 +17,9 @@ public class ProfileController {
 
     @Autowired
     private QuestionService questionService;
+
+    @Autowired
+    private NotificationService notificationService;
 
     @GetMapping("/profile/{action}")
     public String profile(
@@ -34,13 +38,19 @@ public class ProfileController {
         if (action.equals("replies")) {
             model.addAttribute("section", "replies");
             model.addAttribute("sectionName", "最新回复");
+            PaginationDTO pagination = notificationService.list(user.getId(), page, size);
+            Long unreadCount = notificationService.unreadCount(user.getId());
+            model.addAttribute("pagination", pagination);
+            model.addAttribute("unreadCount", unreadCount);
+
         } else {
+            PaginationDTO pagination = questionService.list(user.getId(), page, size);
+            model.addAttribute("pagination", pagination);
             model.addAttribute("section", "questions");
             model.addAttribute("sectionName", "我的提问");
         }
 
-        PaginationDTO pagination = questionService.list(user.getId(), page, size);
-        model.addAttribute("pagination", pagination);
+
         return "profile";
     }
 }

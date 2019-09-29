@@ -1,6 +1,6 @@
 package com.spring.community.controller;
 
-import com.spring.community.CommentTypeEnum;
+import com.spring.community.enums.CommentTypeEnum;
 import com.spring.community.dto.CommentDTO;
 import com.spring.community.dto.QuestionDTO;
 import com.spring.community.service.CommentService;
