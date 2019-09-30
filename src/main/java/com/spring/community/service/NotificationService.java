@@ -31,13 +31,13 @@ public class NotificationService {
         if (notification == null) {
             throw new CustomizeException(CustomizeErrorCode.NOTIFICATION_NOT_FOUND);
         }
-        if (Objects.equals(notification.getReceiver(), user.getId())) {
+        if (!Objects.equals(notification.getReceiver(), user.getId())) {
             throw new CustomizeException(CustomizeErrorCode.NOTIFICATION_READ_FAIL);
         }
-
-        notification.setStatus(NotificationStatusEnum.READ.getStatus());
-        notificationMapper.updateByPrimaryKey(notification);
-
+        if (notification.getStatus() != NotificationStatusEnum.READ.getStatus()){
+            notification.setStatus(NotificationStatusEnum.READ.getStatus());
+            notificationMapper.updateByPrimaryKey(notification);
+        }
         NotificationDTO notificationDTO = new NotificationDTO();
         BeanUtils.copyProperties(notification, notificationDTO);
         notificationDTO.setTypeName(NotificationTypeEnum.nameOfType(notification.getType()));
@@ -77,6 +77,7 @@ public class NotificationService {
         NotificationExample example = new NotificationExample();
         example.createCriteria()
                 .andReceiverEqualTo(userId);
+        example.setOrderByClause("gmt_create desc");
         List<Notification> notifications = notificationMapper.selectByExampleWithRowbounds(example, new RowBounds(offset, size));
         if (notifications.size() == 0){
             return paginationDTO;

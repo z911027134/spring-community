@@ -25,7 +25,7 @@ public class CustomizeExceptionHandler {
             HttpServletResponse response
     ) {
         String contentType = request.getContentType();
-        if (contentType.equals("application/json")) {
+        if ("application/json".equals(contentType)) {
             // ajax json返回
             ResultDTO resultDTO;
             if (e instanceof CustomizeException) {
