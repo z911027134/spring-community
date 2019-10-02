@@ -43,6 +43,7 @@ public class PublishController {
 
     @PostMapping("publish")
     public String doPublish(
+            @RequestParam(value = "id", required = false) Long id,
             @RequestParam(value = "title", required = false) String title,
             @RequestParam(value = "description", required = false) String description,
             @RequestParam(value = "tag", required = false) String tag,
@@ -79,6 +80,7 @@ public class PublishController {
 
         // 接收数据，写入数据库
         Question question = new Question();
+        question.setId(id);
         question.setTag(tag);
         question.setTitle(title);
         question.setDescription(description);
