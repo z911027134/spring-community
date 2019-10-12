@@ -2,7 +2,6 @@ package com.spring.community.controller;
 
 import com.spring.community.cache.TagCache;
 import com.spring.community.dto.QuestionDTO;
-import com.spring.community.mapper.QuestionMapper;
 import com.spring.community.model.Question;
 import com.spring.community.model.User;
 import com.spring.community.service.QuestionService;
