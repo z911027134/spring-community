@@ -7,10 +7,15 @@
     <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="/css/community.css">
     <link rel="stylesheet" href="/css/editormd.min.css">
+    <script type="text/javascript" src="/js/spark-md5-3.0.0.min.js"></script>
+    <script type="text/javascript" src="/js/crypto-js.js"></script>
+    <script type="text/javascript" src="/js/base64.min.js"></script>
+    <script type="text/javascript" src="/js/ufile-token.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="/js/bootstrap.min.js" type="application/javascript"></script>
     <script src="/js/community.js" type="application/javascript"></script>
     <script src="/js/editormd.min.js" type="application/javascript"></script>
+    <script src="/editor/plugins/image-dialog-ufile/image-dialog-ufile.js"></script>
 </head>
 <body>
 <div th:insert="~{navigation::nav}"></div>
@@ -94,7 +99,26 @@
             path: "/editor/lib/",
             watch:false,
             emoji:true,
-            placeholder: "请输入问题描述，支持markdown语法"
+            imageUpload:true,
+            imageFormats : [ "jpg", "jpeg", "gif", "png", "bmp", "webp" ],
+            placeholder: "请输入问题描述，支持markdown语法",
+            toolbarIcons : function() {
+                return  [
+                    "undo","redo","|","bold","del","italic","quote","ucwords","uppercase","lowercase","|",
+                    "h1","h2","h3","h4","|","list-ul","list-ol","hr", "|",
+                    "link","ufile","code","preformatted-text","code-block","table", "datetime", "|",
+                    "goto-line","watch","preview","fullscreen","clear","search"
+                ];
+            },
+            toolbarIconsClass : {
+                ufile : "fa-file-image-o"
+            },
+            toolbarHandlers : {
+                ufile : function(cm, icon, cursor, selection) {
+                    this.imageDialogUfile();
+                }
+            },
+            //qiniuTokenUrl : "/ufileToken",
         });
     });
 </script>

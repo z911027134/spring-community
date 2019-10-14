@@ -14,19 +14,17 @@ import java.util.Base64;
 public class UFileTokenProvider {
 
     public String signRequest(UFileTokenDTO uFileTokenDTO) {
-        StringBuilder builder = new StringBuilder();
-        builder.append(uFileTokenDTO.getMethod().toUpperCase());
-        builder.append("\n");
-        builder.append(uFileTokenDTO.getContentMd5());
-        builder.append("\n");
-        builder.append(uFileTokenDTO.getContentType());
-        builder.append("\n");
-        builder.append(uFileTokenDTO.getData());
-        builder.append("\n");
-        String data = builder.toString();
+        String data = "";
+        data += uFileTokenDTO.getMethod().toUpperCase() + "\n";
+        data += uFileTokenDTO.getContent_md5() + "\n";
+        data += uFileTokenDTO.getContent_type() + "\n";
+        if (uFileTokenDTO.getData() != null && uFileTokenDTO.getData().length() > 0){
+            data += uFileTokenDTO.getData() + "\n";
+        }else{
+            data += "\n";
+        }
         data += this.canonicalizedResource(uFileTokenDTO.getBucket(), uFileTokenDTO.getKey());
-
-        String sign = null;
+        String sign = "";
         try {
             sign = this.sign(data, uFileTokenDTO);
         } catch (Exception e) {
@@ -44,13 +42,12 @@ public class UFileTokenProvider {
         byte[] bytes = hmac.getSignatureRaw(data, uFileTokenDTO.getUcloudPrivateKey());
         String sign = Base64.getEncoder().encodeToString(bytes);
         sign = "UCloud " + uFileTokenDTO.getUcloudPublicKey() + ":" + sign;
-        if (!uFileTokenDTO.getPutPolicy().isEmpty()) {
-            String putPolicy = JSON.toJSONString(uFileTokenDTO.getPutPolicy());
+        if (!uFileTokenDTO.getPut_policy().isEmpty()) {
+            String putPolicy = JSON.toJSONString(uFileTokenDTO.getPut_policy());
             putPolicy = putPolicy.replace("\"", "\\\"");
             putPolicy = Base64.getEncoder().encodeToString(putPolicy.getBytes());
             sign = sign + ":" + putPolicy;
         }
-
         return sign;
     }
 }

@@ -13,10 +13,10 @@ public class UFileTokenDTO {
     private String bucket;
 
     // 文件md5值
-    private String contentMd5;
+    private String content_md5;
 
     // 文件类型
-    private String contentType;
+    private String content_type;
 
     // http 请求方式 大写字母
     private String method;
@@ -33,5 +33,5 @@ public class UFileTokenDTO {
      *         "callbackBody" : "key1=value1&key2=value2" //传递给回调服务的参数
      *     }
      */
-    private String putPolicy;
+    private String put_policy;
 }

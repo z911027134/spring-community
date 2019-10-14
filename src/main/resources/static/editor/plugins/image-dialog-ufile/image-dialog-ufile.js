@@ -24,28 +24,23 @@
 			var selection   = cm.getSelection();
 			var imageLang   = lang.dialog.image;
 			var classPrefix = this.classPrefix;
-			var iframeName  = classPrefix + "image-iframe";
 			var dialogName  = classPrefix + pluginName, dialog;
-			var ajaxToken    = "";        //向本地服务器请求七牛的上传token
 
 			// 存储空间名称。
-			var bucketName = "community";
+			var bucketName = "blogxxxxblog";
 			// 存储空间域名URL地址。
 			var bucketUrl = "http://blogxxxxblog.cn-gd.ufileos.com";
 			// 计算token的地址。既可以在这里配置，也可以在SDK中全局配置。
-			var tokenServerUrl = "http://localhost/token_server.php";
+			var tokenServerUrl = "/ufileToken";
 			// 实例化UCloudUFile
-			var ufile =  new UCloudUFile(bucketName, bucketUrl, tokenPublicKey, tokenPrivateKey, tokenServerUrl, prefix);
+			var ufile =  new UCloudUFile(bucketName, bucketUrl, "", "", tokenServerUrl, "");
 
 			cm.focus();
-
-
 
 			var loading = function(show) {
 				var _loading = dialog.find("." + classPrefix + "dialog-mask");
 				_loading[(show) ? "show" : "hide"]();
 			};
-			console.log("dialog click.");
 			if (editor.find("." + dialogName).length < 1) {
 				var guid   = (new Date).getTime();
 				var action = settings.imageUploadURL + (settings.imageUploadURL.indexOf("?") >= 0 ? "&" : "?") + "guid=" + guid;
@@ -62,9 +57,7 @@
 							"<input type=\"file\" name=\"file\" accept=\"image/*\" />"            +
 							"<input type=\"submit\" value=\"上传图片\" click=\"alert('dd')\" />" +
 							"</div>" : "";
-					})() +
-					"<br/>" +
-					"<input name=\"token\" type=\"hidden\" value=\"" + ajaxToken + "\">"    +        //七牛的上传token
+					})() + "<br/>" +
 					"<label>" + imageLang.alt + "</label>" +
 					"<input type=\"text\" value=\"" + selection + "\" data-alt />" +
 					"<br/>" +
@@ -91,7 +84,6 @@
 							var url  = this.find("[data-url]").val();
 							var alt  = this.find("[data-alt]").val();
 							var link = this.find("[data-link]").val();
-							console.log({"url":url, "alt":alt, "link":link});
 							if (url === "") {
 								alert(imageLang.imageURLEmpty);
 								return false;
@@ -134,44 +126,32 @@
 				var fileInput  = dialog.find("[name=\"file\"]");
 
 				var submitHandler = function() {
-					$.ajax({
-						url         : settings.qiniuTokenUrl,
-						type     : "post",
-						dataType : "json",
-						timeout  : 2000,
-						beforeSend : function(){loading(true);},
-						success  : function(result){
-							if(result.resultCode == 0){
-								ajaxToken = result.data;
-
-								if(ajaxToken === ""){
-									loading(false);
-									alert("没有获取到有效的上传令牌，无法上传！");
-									return;
-								}
-								dialog.find("[name=\"token\"]").val(ajaxToken);
-								var formData = new FormData( $("#qiniuUploadForm")[0] );
-								dialog.find("[name=\"token\"]").val();    //隐藏令牌
-								$.ajax({
-									url: 'https://upload.qiniu.com/' ,
-									type: 'POST',
-									data: formData,
-									dataType: "json",
-									beforeSend:function(){loading(true);},
-									cache: false,
-									contentType: false,
-									processData: false,
-									timeout : 30000,
-									success: function (result) {
-										dialog.find("[data-url]").val(settings.qiniuPublishUrl + result.key);
-									},
-									error : function(){alert("上传超时");},
-									complete:function(){loading(false);}
-								});
-							}
-							else
-								alert(result.message);
+					// 上传文件
+					var file = fileInput[0].files[0];
+					ufile.getContentMd5(file, function(md5) {
+						var suffix = file.name.split(".");
+						var fileRename = "";
+						//文件名为md5拼接文件的类型
+						if (suffix.length > 1) {
+							fileRename = md5 + '.' + suffix[suffix.length-1];
+						} else{
+							fileRename = md5 + '.' + suffix[0];
 						}
+						var data = {
+							file: file,
+							fileRename: fileRename
+						};
+						var errorCallBack = function(res){
+							console.log(res);
+						};
+						var successCallBack = function(res) {
+							dialog.find("[data-url]").val(bucketUrl + '/' + fileRename);
+							dialog.find("button.editormd-enter-btn").trigger("click");
+						};
+						var progressCallBack = function(res) {
+							console.log("上传进度：" + (res * 100) + "%");
+						};
+						ufile.uploadFile(data, successCallBack, errorCallBack, progressCallBack);
 					});
 				};
 
@@ -184,7 +164,6 @@
 					if (fileName === "")
 					{
 						alert(imageLang.uploadFileEmpty);
-
 						return false;
 					}
 
