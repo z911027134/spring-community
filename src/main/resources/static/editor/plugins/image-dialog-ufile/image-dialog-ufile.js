@@ -11,7 +11,6 @@
 (function() {
 
 	var factory = function (exports) {
-		//var $ = jQuery;           // if using module loader(Require.js/Sea.js).
 		var pluginName   = "image-dialog-ufile";
 		exports.fn.imageDialogUfile = function() {
 

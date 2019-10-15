@@ -15,6 +15,11 @@
     <script src="/js/editormd.min.js" type="application/javascript"></script>
     <script src="/editor/lib/marked.min.js"></script>
     <script src="/editor/lib/prettify.min.js"></script>
+    <script src="/js/spark-md5-3.0.0.min.js" type="text/javascript"></script>
+    <script src="/js/crypto-js.js" type="text/javascript"></script>
+    <script src="/js/base64.min.js" type="text/javascript"></script>
+    <script src="/js/ufile-token.js" type="text/javascript"></script>
+    <script src="/editor/plugins/image-dialog-ufile/image-dialog-ufile.js"></script>
 </head>
 <body><div th:insert="~{navigation::nav}"></div>
 <div class="container-fluid main">
@@ -166,7 +171,25 @@
             path: "/editor/lib/",
             watch:false,
             emoji:true,
-            placeholder: "请输入评论，支持markdown语法"
+            imageUpload:true,
+            imageFormats : [ "jpg", "jpeg", "gif", "png", "bmp", "webp" ],
+            placeholder: "请输入评论，支持markdown语法",
+            toolbarIcons : function() {
+                return  [
+                    "undo","redo","|","bold","del","italic","quote","ucwords","uppercase","lowercase","|",
+                    "h1","h2","h3","h4","|","list-ul","list-ol","hr", "|",
+                    "link","ufile","code","preformatted-text","code-block","table", "datetime", "|",
+                    "goto-line","watch","preview","fullscreen","clear","search"
+                ];
+            },
+            toolbarIconsClass : {
+                ufile : "fa-file-image-o"
+            },
+            toolbarHandlers : {
+                ufile : function(cm, icon, cursor, selection) {
+                    this.imageDialogUfile();
+                }
+            }
         });
         $(".comments").find("div.comment-view").each(function(i){
             editormd.markdownToHTML($(this).attr("id"), {});
